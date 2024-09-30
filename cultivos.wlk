@@ -1,9 +1,8 @@
 import wollok.game.*
 
 class Maiz {
-	method position() {
-		// TODO: hacer que aparezca donde lo plante Hector
-		return game.at(1, 1)
+	method position(x, y) {
+		return game.at(x, y)
 	}
 	method image() {
 		// TODO: hacer que devuelva la imagen que corresponde
