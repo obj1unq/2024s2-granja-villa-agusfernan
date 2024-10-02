@@ -8,11 +8,11 @@ program farmville {
 	game.title("La granja de Héctor")
 	game.height(10)
 	game.width(10)
+	game.cellSize(50) 
 	game.ground("ground.png")
-
+	
 	//  VISUALES
- 	game.addVisualCharacter(hector)
- 	game.addVisual(new Maiz()) // Se agrega a modo de prueba
+ 	game.addVisual(hector)
  	
 
 	// MOVIMIENTOS
@@ -20,8 +20,10 @@ program farmville {
 	keyboard.down().onPressDo({hector.mover(abajo)})
 	keyboard.right().onPressDo({hector.mover(derecha)})
 	keyboard.left().onPressDo({hector.mover(izquierda)})
-
-	keyboard.m().onPressDo({hector.sembrar(new Maiz())})
+	keyboard.m().onPressDo({hector.sembrarMaiz()})
+	keyboard.t().onPressDo({hector.sembrarTrigo()})
+	keyboard.o().onPressDo({hector.sembrarTomaco()})
+	keyboard.r().onPressDo({hector.regar()})
  	//  COMIENZA
 	game.start()
 }
