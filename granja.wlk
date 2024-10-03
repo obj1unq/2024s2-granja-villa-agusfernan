@@ -33,6 +33,12 @@ object granja {
         }
     }
 
+    method validarSiPuedeCosechar(posicion) {
+        return if (not self.hayAlgoSembrado(posicion)) {
+            hector.error("No hay planta para cosechar en esta posición")
+        }
+    }
+
     method hayAlgoSembrado(posicion) {
         return siembra.any({planta => self.esMismaPosicion(planta.position(), posicion)})
     }
@@ -65,5 +71,19 @@ object granja {
 
     method siguienteEnEjeY(posicion) {
         return game.at(posicion.x(), (posicion.y() + 1))
+    }
+
+    method cosechar(posicion) {
+        self.validarSiPuedeCosechar(posicion)
+        self.validarSiEstaListaParaCosechar(posicion)
+        hector.cosecha().add(self.plantaEn(posicion)) // Agrega la planta a la lista de cosechas de Hector
+        game.removeVisual(self.plantaEn(posicion)) // Remueve la visual del juego de la planta que esta en la posicion, que es la cosechada
+        siembra.remove(self.plantaEn(posicion)) // La borra de la lista de siembra de la granja, por lo que me volvera a permitir sembrar en la posicion.
+    }
+
+    method validarSiEstaListaParaCosechar(posicion) {
+        return if (not self.plantaEn(posicion).sePuedeCosechar()) {
+            hector.error("La planta no esta lista para ser cosechada")
+        }
     }
 }

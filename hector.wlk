@@ -6,6 +6,8 @@ import granja.*
 object hector {
 	var property position = game.center()
 	const property image = "player.png"
+	var property cosecha = []
+	var property oro = 0
 
 	method mover(direccion) {
 		const siguiente = direccion.siguiente(position)
@@ -41,4 +43,34 @@ object hector {
 		granja.regar(position)
 
 	} 
+
+	// Cosecha
+
+	method cosechar() {
+		granja.cosechar(position)
+	}
+
+	// Venta
+
+	method vender() {
+		oro = self.oroDeCosecha()
+		self.vaciarCosecha()
+	}
+	
+	method oroDeCosecha() {
+		return cosecha.sum({planta => planta.precio()})
+	}
+
+	method vaciarCosecha() {
+		cosecha.clear()
+	}
+
+	method cantidadPlantasCosechadas() {
+		return cosecha.size()
+	}
+
+	method infoCosecha() {
+		return game.say(self, "Tengo " + oro + " monedas, y " + self.cantidadPlantasCosechadas() + " plantas para vender")
+	}
+
 }

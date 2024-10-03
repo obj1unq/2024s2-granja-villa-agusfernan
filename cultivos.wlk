@@ -29,6 +29,13 @@ class Maiz {
 		return estado == 1
 	}
 
+	method sePuedeCosechar() {
+		return self.esAdulta()
+	}
+
+	method precio() {
+		return 150
+	}
 
 }
 
@@ -60,7 +67,13 @@ class Trigo {
 		// ESTA POR POLIMORFISMO, NO SE USA
 	}
 
-	
+	method sePuedeCosechar() {
+		return estado >= 2
+	}
+
+	method precio() {
+		return (estado - 1) * 100
+	}
 }
 
 class Tomaco {
@@ -90,5 +103,11 @@ class Tomaco {
 		return estado == 1
 	}
 
+	method sePuedeCosechar() {
+		return estado >= 0 // Para que pueda cosecharlo siempre
+	}
 
+	method precio() {
+		return 80
+	}
 }
