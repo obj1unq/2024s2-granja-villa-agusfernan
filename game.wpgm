@@ -3,6 +3,8 @@ import hector.*
 import cultivos.*
 import posiciones.*
 import aspersor.*
+import mercado.*
+import granja.*
 
 program farmville {
 	//  CONFIG	
@@ -12,7 +14,8 @@ program farmville {
 	game.cellSize(50) 
 	game.ground("ground.png")
 	
-	//  VISUALES
+	granja.agregarMercados()
+
  	game.addVisual(hector)
  	
 

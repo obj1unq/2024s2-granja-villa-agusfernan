@@ -2,9 +2,10 @@ import cultivos.*
 import hector.*
 import wollok.game.*
 import posiciones.*
+import mercado.*
 
 object granja {
-
+    var property mercados = #{}
     var property siembra = #{}
 
     method validarDentro(posicion) {
@@ -21,9 +22,11 @@ object granja {
         siembra.add(planta)
     }
 
-    method validarSiHayAlgoSembrado(posicion) {
+    method validarSiPuedePlantar(posicion) {
         return if (self.hayAlgoSembrado(posicion)) {
             hector.error("Ya hay una planta sembrada en esta posición")
+        } else if (self.hayMercadoEn(posicion)) {
+            hector.error("No puedo plantar en esta posición, hay un mercado")
         }
     }
 
@@ -39,10 +42,28 @@ object granja {
         }
     }
 
-    method validarSiHayPlantaParaAspersor(posicion) { // Hace lo mismo que validarSiHaySembrado pero quiero otro mensaje!
+    method validarSiPuedePonerAspersor(posicion) { // Hace lo mismo que validarSiHaySembrado y validarSiEstaEnMercado pero quiero otro mensaje!
         return if ( self.hayAlgoSembrado(posicion)) {
             hector.error("No puedo colocar el aspersor en esta posición, hay una planta")
+        } else if (self.hayMercadoEn(posicion)) {
+            hector.error("No puedo colocar el aspersor en esta posición, hay un mercado")
         }
+    }
+
+    method validarSiEstaEnMercado(posicion) {
+        return if (not self.hayMercadoEn(posicion)) {
+            hector.error("No puedo vender ya que no estoy en un Mercado")
+        }  
+    }
+
+    method validarSiPuedeVenderEn(posicion, valor) {
+        return if (not self.mercadoEn(posicion).tieneSuficienteOro(valor)) {
+            hector.error ("El mercado no tiene suficiente oro para comprar mi cosecha")
+        }
+    }
+
+    method mercadoEn(posicion) {
+        return mercados.find({mercado => self.esMismaPosicion(mercado.position(), posicion)})
     }
 
     method hayAlgoSembrado(posicion) {
@@ -53,10 +74,13 @@ object granja {
         return siembra.find({planta => self.esMismaPosicion(planta.position(), posicion)})
     }
 
-    method esMismaPosicion (posicionPlanta, posicion) {
-        return posicionPlanta == posicion
+    method esMismaPosicion (posicionObjeto, posicion) {
+        return posicionObjeto == posicion
     }
 
+    method hayMercadoEn(posicion) {
+        return mercados.any({mercado => self.esMismaPosicion(mercado.position(), posicion)})
+    }
     method regar(posicion) {
         self.validarSiPuedeRegar(posicion)
         self.plantaEn(posicion).evolucionar()
@@ -92,4 +116,19 @@ object granja {
             hector.error("La planta no esta lista para ser cosechada")
         }
     }
+    
+    method agregarMercados() {
+        const mercado1 = new Mercado (position = game.at(9, 9), monedas = 10000)
+        const mercado2 = new Mercado (position = game.at(0, 9), monedas = 2500)
+        mercados.add(mercado1)
+        mercados.add(mercado2)
+        game.addVisual(mercado2)
+        game.addVisual(mercado1)
+
+    }
+
+    method mercadoCompra(posicion) {
+        return self.mercadoEn(posicion).agregarMercaderia()
+    }
+
 }
