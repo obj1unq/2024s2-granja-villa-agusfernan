@@ -39,6 +39,12 @@ object granja {
         }
     }
 
+    method validarSiHayPlantaParaAspersor(posicion) { // Hace lo mismo que validarSiHaySembrado pero quiero otro mensaje!
+        return if ( self.hayAlgoSembrado(posicion)) {
+            hector.error("No puedo colocar el aspersor en esta posición, hay una planta")
+        }
+    }
+
     method hayAlgoSembrado(posicion) {
         return siembra.any({planta => self.esMismaPosicion(planta.position(), posicion)})
     }

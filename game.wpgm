@@ -2,6 +2,7 @@ import wollok.game.*
 import hector.*
 import cultivos.*
 import posiciones.*
+import aspersor.*
 
 program farmville {
 	//  CONFIG	
@@ -20,13 +21,20 @@ program farmville {
 	keyboard.down().onPressDo({hector.mover(abajo)})
 	keyboard.right().onPressDo({hector.mover(derecha)})
 	keyboard.left().onPressDo({hector.mover(izquierda)})
+
 	keyboard.m().onPressDo({hector.sembrarMaiz()})
 	keyboard.t().onPressDo({hector.sembrarTrigo()})
 	keyboard.o().onPressDo({hector.sembrarTomaco()})
 	keyboard.r().onPressDo({hector.regar()})
+
 	keyboard.c().onPressDo({hector.cosechar()})
+
 	keyboard.v().onPressDo({hector.vender()})
 	keyboard.space().onPressDo({hector.infoCosecha()})
+
+	keyboard.a().onPressDo({hector.agregarAspersor()})
+	game.onTick(1000, "aspersores", {hector.activarAspersores()})
+	
  	//  COMIENZA
 	game.start()
 }
