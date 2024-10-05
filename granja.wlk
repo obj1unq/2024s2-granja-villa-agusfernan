@@ -92,8 +92,8 @@ object granja {
         return if (not self.estaDentro(self.siguienteEnEjeY(posicion))) {
             posicion // Si no esta dentro, devuelve la posicion dada
         } else if (self.hayAlgoSembrado(self.siguienteEnEjeY(posicion))) {
-            // Si en la posicion siguiente de la dada hay una planta, analiza la siguiente de esa
-            self.siguientePosicionEnEjeYSiEsPosible(self.siguienteEnEjeY(posicion))
+            // Si en la posicion siguiente de la dada hay una planta, se queda en el lugar (esto lo evalua por la condicion de no poder tener 2 plantas en el mismo lugar)
+            posicion
             } else {
                 self.siguienteEnEjeY(posicion) // Si no hay nada sembrado, devuelve la posicion siguiente de la dada.
             }

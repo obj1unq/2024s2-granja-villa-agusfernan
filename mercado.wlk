@@ -9,7 +9,7 @@ class Mercado {
     const property image = "market.png"
   
     method agregarMercaderia() {
-        mercaderia.All(hector.cosecha())
+        mercaderia.addAll(hector.cosecha())
         monedas -= hector.oroDeCosecha()
     }
 

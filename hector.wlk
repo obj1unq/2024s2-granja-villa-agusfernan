@@ -58,8 +58,8 @@ object hector {
 	method vender() {
 		granja.validarSiEstaEnMercado(position)
 		granja.validarSiPuedeVenderEn(position, self.oroDeCosecha())
-		oro += self.oroDeCosecha()
 		granja.mercadoCompra(position)
+		oro += self.oroDeCosecha()
 		self.vaciarCosecha()
 	}
 	
