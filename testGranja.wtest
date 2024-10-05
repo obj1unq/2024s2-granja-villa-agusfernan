@@ -1,9 +1,131 @@
-import example.pepita
+import aspersor.*
+import wollok.game.*
+import hector.*
+import cultivos.*
+import granja.*
+import posiciones.*
+import mercado.*
 
-describe "group of tests for pepita" {
+describe "Hector" {
 
-  test "pepita has initial energy" {
-    assert.equals(100, pepita.energy())
+  test "Hector intenta plantar en la misma posicion más de una planta" {
+    hector.sembrarTrigo()
+    // En mi juego no se puede plantar en la misma parcela mas de una planta
+    assert.throwsExceptionWithMessage("Ya hay una planta sembrada en esta posición", {hector.sembrarMaiz()})
+    }
+
+
+  test "Hector plantar en 2 posiciones" {
+    hector.sembrarTrigo()
+    hector.mover(izquierda)
+    hector.sembrarMaiz() 
+    assert.equals(granja.siembra().size(),2)
+
+  }
+
+  test "Hector NO puede salir del tablero" {
+    // Llevo a Hector al borde izquierdo-abajo
+    hector.position(game.at(0,0))
+    assert.throwsExceptionWithMessage("No puedo moverme fuera del tablero", {hector.mover(izquierda)})
+    assert.throwsExceptionWithMessage("No puedo moverme fuera del tablero", {hector.mover(abajo)})
+    
+    // Llevo a hector al borde derecho-arriba
+    hector.position(game.at(9,9))
+    assert.throwsExceptionWithMessage("No puedo moverme fuera del tablero", { hector.mover(derecha) })
+    assert.throwsExceptionWithMessage("No puedo moverme fuera del tablero", { hector.mover(arriba) })
+  
+  }
+  test "Hector riega una planta" {
+
+    hector.sembrarTrigo()
+    const estadoSinRegar = granja.plantaEn(hector.position()).estado()
+    hector.regar()
+    assert.equals(estadoSinRegar + 1, {granja.plantaEn(hector.position()).estado()})
+  }
+  test "Hector intenta regar cuando no hay planta" {
+    assert.throwsExceptionWithMessage("No hay planta para regar en esta posición", {hector.regar()})
+
+  }
+
+  test "Hector intenta planta en un mercado" {
+
+    hector.position(game.at(0,0))
+    granja.agregarMercados()
+    assert.throwsExceptionWithMessage("No puedo plantar en esta posición, hay un mercado", {hector.sembrarMaiz()})
+    
+  }
+
+
+  test "Hector intenta vender fuera de un mercado" {
+
+    assert.throwsExceptionWithMessage("No puedo vender ya que no estoy en un Mercado", {hector.vender()})
+
+  }
+
+
+  test "Hector intenta vender, pero el mercado no tiene suficiente diero" {
+    granja.agregarMercados()
+    granja.mercados().forEach({mercado => mercado.monedas(100)})
+    hector.sembrarMaiz()
+    hector.regar()
+    hector.cosecha()
+    hector.position(game.at(0,0)) // está en un mercado
+    assert.throwsExceptionWithMessage("El mercado no tiene suficiente oro para comprar mi cosecha", {hector.vender()})
+  }
+  
+}
+
+
+describe "Aspersores" {
+  test "Aspersores riegan todo el sector" {
+    hector.position(game.at(4,4))
+    hector.agregarAspersor()
+
+    const posicion = hector.position()
+    
+    granja.sembrar( new Maiz( position = game.at(3, 4)))
+    granja.sembrar( new Maiz( position = game.at(5, 4)))
+    granja.sembrar( new Maiz( position = game.at(4, 3)))
+    granja.sembrar( new Maiz( position = game.at(4, 5)))
+
+    assert.that(granja.siembra().all({planta => not planta.esAdulta()}))
+    hector.activarAspersores()
+    assert.that(granja.siembra().all({planta => planta.esAdulta()}))
+
+  }
+
+
+}
+
+describe "Cultivos" {
+  test "Trigo ciclo de Adultez" {
+    const trigo = new Trigo(position = game.at(2,2))
+    assert.notThat(trigo.esAdulta())
+    trigo.regar() //estado 1
+    assert.that(trigo.esAdulta())
+    trigo.regar() //estado 2
+    assert.that(trigo.esAdulta())
+    trigo.regar() //estado 3
+    assert.that(trigo.esAdulta())
+    trigo.regar() //estado 0
+    assert.notThat(trigo.esAdulta())
+  }
+
+  test "Maiz ciclo de Adultez" {
+    const maiz = new Maiz(position = game.at(4,4))
+    assert.notThat(maiz.esAdulta())
+    maiz.regar() 
+    assert.that(maiz.esAdulta())
+    // El ciclo de adultez del maiz es de un solo estado
+  }
+
+  test "Tomaco ciclo de Adultez" {
+    const tomaco = new Tomaco(position = game.at(4,4))
+
+    assert.that(tomaco.esAdulta())
+    tomaco.regar() 
+    assert.that(tomaco.esAdulta())
+    // Siempre es adulto el tomaco, asi que si lo regamos igual seguira siendo adulto como en un principio
   }
 
 }
