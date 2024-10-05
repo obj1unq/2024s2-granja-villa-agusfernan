@@ -64,7 +64,7 @@ class Trigo {
 	}
 
 	method esAdulta() {
-		// ESTA POR POLIMORFISMO, NO SE USA
+		return estado != 0
 	}
 
 	method sePuedeCosechar() {
@@ -100,7 +100,7 @@ class Tomaco {
 	}
 
 	method esAdulta() {
-		return estado == 1
+		return true // Siempre es adulto
 	}
 
 	method sePuedeCosechar() {
